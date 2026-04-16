@@ -25,9 +25,9 @@
 <script setup>
 import { computed, onMounted } from 'vue'
 import { storeToRefs } from 'pinia'
-import { join } from 'path'
 import Item from '@/components/Item.vue'
 import { useAsarStore } from '@/stores/asar'
+import * as fs from '@/fs'
 
 const asar = useAsarStore()
 const { asarName, currentPath: filePath, contents } = storeToRefs(asar)
@@ -37,14 +37,14 @@ const inSubFolder = computed(() =>
 )
 
 const sortedContents = computed(() => [
-  ...contents.value.filter(({ stat }) => stat.isDirectory()),
-  ...contents.value.filter(({ stat }) => stat.isFile())
+  ...contents.value.filter(({ stat }) => stat.isDirectory === true),
+  ...contents.value.filter(({ stat }) => stat.isFile === true)
 ])
 
 function navigateUp () {
-  let pwd = filePath.value.split(/\\|\//g)
-  pwd.pop()
-  pwd = join(pwd.join('/'))
+  const segments = filePath.value.split(/\\|\//g)
+  segments.pop()
+  const pwd = fs.joinPath(...segments)
   asar.setCurrentPath(pwd)
   asar.fetchContents(pwd)
 }

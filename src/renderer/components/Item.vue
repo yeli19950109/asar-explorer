@@ -10,8 +10,9 @@
 </template>
 
 <script setup>
-import { computed, onMounted, ref, inject } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useAsarStore } from '@/stores/asar'
+import * as fs from '@/fs'
 
 const props = defineProps({
   item: {
@@ -22,9 +23,8 @@ const props = defineProps({
 
 const itemRef = ref(null)
 const asar = useAsarStore()
-const $fs = inject('fs')
 
-const isFile = computed(() => props.item.stat.isFile())
+const isFile = computed(() => props.item.stat.isFile === true)
 
 function navigate () {
   if (!isFile.value) {
@@ -37,8 +37,8 @@ onMounted(() => {
   if (!itemRef.value) return
   itemRef.value.ondragstart = async (e) => {
     e.preventDefault()
-    const tmpPath = await $fs.extractFile(props.item.path, props.item.name)
-    window.asarExplorer.startDrag(tmpPath)
+    const tmpPath = await fs.extractFile(props.item.path, props.item.name)
+    fs.startDrag(tmpPath)
     asar.addGarbage(tmpPath)
   }
 })

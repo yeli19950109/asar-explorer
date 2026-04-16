@@ -5,11 +5,11 @@
 </template>
 
 <script setup>
-import { onMounted, inject } from 'vue'
+import { onMounted } from 'vue'
 import { useAsarStore } from '@/stores/asar'
+import * as fs from '@/fs'
 
 const asar = useAsarStore()
-const $fs = inject('fs')
 
 onMounted(() => {
   document.addEventListener('drop', (e) => {
@@ -30,7 +30,7 @@ async function handleDrop (files) {
   if (!/\.asar$/.test(files[0].path)) return
 
   try {
-    await Promise.resolve($fs.pathExists(files[0].path))
+    await Promise.resolve(fs.pathExists(files[0].path))
     asar.setOriginalPath(files[0].path)
   } catch (e) {
     console.log(e)

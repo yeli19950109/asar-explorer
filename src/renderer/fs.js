@@ -1,5 +1,6 @@
 /**
- * File system access via main process (see src/main/events.js) and preload API.
+ * File system access: main process handlers in src/main/events.js,
+ * bridged via preload `contextBridge.exposeInMainWorld('asarExplorer', …)`.
  */
 
 function getApi () {
@@ -36,4 +37,8 @@ export function addGarbage (p) {
 
 export function clearGarbage () {
   getApi().clearGarbage()
+}
+
+export function startDrag (tmpPath) {
+  getApi().startDrag(tmpPath)
 }
