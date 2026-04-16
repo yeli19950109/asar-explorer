@@ -1,25 +1,13 @@
 'use strict'
 
-import path from 'path'
+import path from 'node:path'
 import { app, BrowserWindow } from 'electron'
-/**
- * Set `__static` path to static files in production
- */
-if (process.env.NODE_ENV !== 'development') {
-  globalThis.__static = require('path').join(__dirname, '/static')
-}
 
 import './events'
 
 let mainWindow
-const winURL = process.env.NODE_ENV === 'development'
-  ? `http://localhost:9080`
-  : `file://${__dirname}/index.html`
 
 function createWindow () {
-  /**
-   * Initial window options
-   */
   mainWindow = new BrowserWindow({
     backgroundColor: '#ee0979',
     height: 540,
@@ -34,9 +22,15 @@ function createWindow () {
     }
   })
 
-  mainWindow.loadURL(winURL)
+  if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
+    mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL)
+  } else {
+    mainWindow.loadFile(
+      path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`)
+    )
+  }
 
-  if (process.env.NODE_ENV === 'development') {
+  if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
     mainWindow.webContents.openDevTools({ mode: 'detach' })
   }
 

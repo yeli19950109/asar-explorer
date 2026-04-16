@@ -1,53 +1,13 @@
 {
   "name": "asar-explorer",
   "version": "0.1.0",
-  "description": "An electron-vue project",
-  "main": "./dist/electron/main.js",
+  "description": "An Electron + Vue ASAR explorer",
+  "main": ".vite/build/index.js",
   "scripts": {
-    "build": "node .electron-vue/build.js && build",
-    "build:dir": "node .electron-vue/build.js && build --dir",
-    "build:web": "cross-env BUILD_TARGET=web node .electron-vue/build.js",
-    "dev": "node .electron-vue/dev-runner.js",
-    "pack": "npm run pack:main && npm run pack:renderer",
-    "pack:main": "cross-env NODE_ENV=production webpack --progress --color --config .electron-vue/webpack.main.config.js",
-    "pack:renderer": "cross-env NODE_ENV=production webpack --progress --color --config .electron-vue/webpack.renderer.config.js"
-  },
-  "build": {
-    "productName": "asar-explorer",
-    "appId": "org.simulatedgreg.asar-explorer",
-    "category": "public.app-category.tools",
-    "directories": {
-      "output": "build"
-    },
-    "files": [
-      "dist/electron",
-      "node_modules/",
-      "package.json"
-    ],
-    "dmg": {
-      "contents": [
-        {
-          "x": 410,
-          "y": 150,
-          "type": "link",
-          "path": "/Applications"
-        },
-        {
-          "x": 130,
-          "y": 150,
-          "type": "file"
-        }
-      ]
-    },
-    "mac": {
-      "icon": "build/icons/icon.icns"
-    },
-    "win": {
-      "icon": "build/icons/icon.ico"
-    },
-    "linux": {
-      "icon": "build/icons"
-    }
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make",
+    "publish": "electron-forge publish"
   },
   "author": "Greg Holguin <simulatedgreg@gmail.com>",
   "license": "MIT",
@@ -60,35 +20,17 @@
     "vue": "^3.5.32"
   },
   "devDependencies": {
-    "@swc/core": "^1.15.26",
+    "@electron-forge/cli": "^7.10.2",
+    "@electron-forge/maker-deb": "^7.10.2",
+    "@electron-forge/maker-rpm": "^7.10.2",
+    "@electron-forge/maker-squirrel": "^7.10.2",
+    "@electron-forge/maker-zip": "^7.10.2",
+    "@electron-forge/plugin-fuses": "^7.10.2",
+    "@electron-forge/plugin-vite": "^7.10.2",
+    "@electron/fuses": "^1.8.0",
     "@types/node": "^24.0.0",
-    "cfonts": "^3.3.1",
-    "chalk": "^5.6.2",
-    "copy-webpack-plugin": "^14.0.0",
-    "cross-env": "^10.1.0",
-    "css-loader": "^7.1.4",
-    "del": "^8.0.1",
-    "devtron": "^1.4.0",
+    "@vitejs/plugin-vue": "^5.2.4",
     "electron": "^41.2.1",
-    "electron-builder": "^26.8.1",
-    "electron-debug": "^4.1.0",
-    "electron-devtools-installer": "^4.0.0",
-    "electron-rebuild": "^3.2.9",
-    "file-loader": "^6.2.0",
-    "html-webpack-plugin": "^5.6.6",
-    "mini-css-extract-plugin": "^2.9.4",
-    "multispinner": "^0.2.1",
-    "node-loader": "^2.1.0",
-    "style-loader": "^4.0.0",
-    "swc-loader": "^0.2.7",
-    "tree-kill": "^1.2.2",
-    "url-loader": "^4.1.1",
-    "vue-html-loader": "^1.2.4",
-    "vue-loader": "^17.4.2",
-    "vue-style-loader": "^4.1.3",
-    "webpack": "^5.106.2",
-    "webpack-cli": "^7.0.2",
-    "webpack-dev-server": "^5.2.3",
-    "webpack-hot-middleware": "^2.26.1"
+    "vite": "^6.3.5"
   }
 }

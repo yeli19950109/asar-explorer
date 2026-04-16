@@ -1,6 +1,13 @@
 import { ipcMain, app } from 'electron'
-import { join } from 'path'
+import { join } from 'node:path'
 import fs from 'fs-extra'
+
+function dragIconPath () {
+  if (app.isPackaged) {
+    return join(process.resourcesPath, 'drag.png')
+  }
+  return join(app.getAppPath(), 'resources', 'drag.png')
+}
 
 function serializeStat (st) {
   return {
@@ -53,7 +60,7 @@ ipcMain.on('asar:clearGarbage', () => {
 ipcMain.on('ondragstart', (e, dragPath) => {
   e.sender.startDrag({
     file: dragPath,
-    icon: join(__static, '/drag.png')
+    icon: dragIconPath()
   })
 })
 

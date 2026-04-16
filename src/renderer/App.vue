@@ -16,7 +16,7 @@ const { originalPath } = storeToRefs(useAsarStore())
 </script>
 
 <style>
-@import "~minireset.css/minireset.css";
+@import "minireset.css/minireset.css";
 @import url('https://fonts.googleapis.com/css?family=Roboto');
 
 html,

@@ -1,7 +1,7 @@
 'use strict'
 
-const { contextBridge, ipcRenderer } = require('electron')
-const path = require('path')
+import path from 'node:path'
+import { contextBridge, ipcRenderer } from 'electron'
 
 /**
  * Renderer-visible API (only what we whitelist here reaches the page).
