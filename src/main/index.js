@@ -1,5 +1,6 @@
 'use strict'
 
+import path from 'path'
 import { app, BrowserWindow } from 'electron'
 /**
  * Set `__static` path to static files in production
@@ -24,7 +25,13 @@ function createWindow () {
     height: 540,
     useContentSize: true,
     titleBarStyle: 'hidden',
-    width: 360
+    width: 360,
+    webPreferences: {
+      preload: path.join(__dirname, 'preload.js'),
+      nodeIntegration: true,
+      contextIsolation: false,
+      sandbox: false
+    }
   })
 
   mainWindow.loadURL(winURL)

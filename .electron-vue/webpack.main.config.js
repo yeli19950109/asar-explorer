@@ -1,14 +1,15 @@
 'use strict'
 
-process.env.BABEL_ENV = 'main'
-
 const path = require('path')
 const { dependencies } = require('../package.json')
 const webpack = require('webpack')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
+const { getSwcLoaderOptions } = require('./swc-env')
 
-const BabiliWebpackPlugin = require('babili-webpack-plugin')
+const isProd = process.env.NODE_ENV === 'production'
 
 let mainConfig = {
+  mode: isProd ? 'production' : 'development',
   entry: {
     main: path.join(__dirname, '../src/main/index.js')
   },
@@ -18,24 +19,12 @@ let mainConfig = {
   module: {
     rules: [
       {
-        test: /\.(js)$/,
-        enforce: 'pre',
+        test: /\.js$/,
         exclude: /node_modules/,
         use: {
-          loader: 'eslint-loader',
-          options: {
-            formatter: require('eslint-friendly-formatter')
-          }
+          loader: 'swc-loader',
+          options: getSwcLoaderOptions('main')
         }
-      },
-      {
-        test: /\.js$/,
-        use: 'babel-loader',
-        exclude: /node_modules/
-      },
-      {
-        test: /\.json$/,
-        use: 'json-loader'
       },
       {
         test: /\.node$/,
@@ -47,13 +36,26 @@ let mainConfig = {
     __dirname: false,
     __filename: false
   },
+  optimization: {
+    minimize: isProd,
+    emitOnErrors: false
+  },
   output: {
     filename: '[name].js',
-    libraryTarget: 'commonjs2',
+    library: {
+      type: 'commonjs2'
+    },
     path: path.join(__dirname, '../dist/electron')
   },
   plugins: [
-    new webpack.NoEmitOnErrorsPlugin()
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: path.join(__dirname, '../src/main/preload.js'),
+          to: path.join(__dirname, '../dist/electron/preload.js')
+        }
+      ]
+    })
   ],
   resolve: {
     extensions: ['.js', '.json', '.node']
@@ -77,10 +79,6 @@ if (process.env.NODE_ENV !== 'production') {
  */
 if (process.env.NODE_ENV === 'production') {
   mainConfig.plugins.push(
-    new BabiliWebpackPlugin({
-      removeConsole: true,
-      removeDebugger: true
-    }),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': '"production"'
     })
