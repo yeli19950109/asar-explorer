@@ -8,14 +8,20 @@ const { getSwcLoaderOptions } = require('./swc-env')
 
 const isProd = process.env.NODE_ENV === 'production'
 
+/** ESM-only packages must not be bundled into the main script */
+const mainExternals = [
+  ...Object.keys(dependencies || {}),
+  'electron-debug',
+  'electron-is-dev',
+  'electron-localshortcut'
+]
+
 let mainConfig = {
   mode: isProd ? 'production' : 'development',
   entry: {
     main: path.join(__dirname, '../src/main/index.js')
   },
-  externals: [
-    ...Object.keys(dependencies || {})
-  ],
+  externals: mainExternals,
   module: {
     rules: [
       {

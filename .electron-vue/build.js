@@ -3,7 +3,9 @@
 process.env.NODE_ENV = 'production'
 
 const { say } = require('cfonts')
-const chalk = require('chalk')
+/** Chalk v5 is ESM; CJS `require` yields `{ default }`. */
+const chalkMod = require('chalk')
+const chalk = chalkMod.default ?? chalkMod
 const del = require('del')
 const { spawn } = require('child_process')
 const webpack = require('webpack')

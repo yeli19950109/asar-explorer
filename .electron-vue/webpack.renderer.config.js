@@ -97,12 +97,11 @@ let rendererConfig = {
         ? path.resolve(__dirname, '../node_modules')
         : false
     }),
-    new webpack.HotModuleReplacementPlugin()
   ],
   output: {
     filename: '[name].js',
     library: {
-      type: 'commonjs2'
+      type: 'umd'
     },
     path: path.join(__dirname, '../dist/electron')
   },

@@ -1,6 +1,8 @@
 'use strict'
 
-const chalk = require('chalk')
+/** Chalk v5 is ESM; CJS `require` yields `{ default }`. */
+const chalkMod = require('chalk')
+const chalk = chalkMod.default ?? chalkMod
 const electron = require('electron')
 const path = require('path')
 const { say } = require('cfonts')
@@ -44,14 +46,14 @@ function startRenderer () {
     rendererConfig.entry.renderer = [path.join(__dirname, 'dev-client')].concat(rendererConfig.entry.renderer)
 
     const compiler = webpack(rendererConfig)
-    hotMiddleware = webpackHotMiddleware(compiler, { log: false })
+    // hotMiddleware = webpackHotMiddleware(compiler, { log: false })
 
-    compiler.hooks.compilation.tap('html-hot', (compilation) => {
-      HtmlWebpackPlugin.getHooks(compilation).afterEmit.tapAsync('html-hot', (data, cb) => {
-        hotMiddleware.publish({ action: 'reload' })
-        cb(null, data)
-      })
-    })
+    // compiler.hooks.compilation.tap('html-hot', (compilation) => {
+    //   HtmlWebpackPlugin.getHooks(compilation).afterEmit.tapAsync('html-hot', (data, cb) => {
+    //     hotMiddleware.publish({ action: 'reload' })
+    //     cb(null, data)
+    //   })
+    // })
 
     let resolved = false
     compiler.hooks.done.tap('renderer-ready', (stats) => {
@@ -71,7 +73,7 @@ function startRenderer () {
     const server = new WebpackDevServer(
       {
         port: 9080,
-        hot: true,
+        // hot: true,
         static: {
           directory: path.join(__dirname, '../')
         },
@@ -80,7 +82,7 @@ function startRenderer () {
         },
         setupMiddlewares: (middlewares, devServer) => {
           if (devServer && devServer.app) {
-            devServer.app.use(hotMiddleware)
+            // devServer.app.use(hotMiddleware)
           }
           return middlewares
         }
@@ -98,11 +100,11 @@ function startMain () {
 
     const compiler = webpack(mainConfig)
 
-    compiler.hooks.watchRun.tapAsync('main-log', (_compiler, done) => {
-      logStats('Main', chalk.white.bold('compiling...'))
-      hotMiddleware.publish({ action: 'compiling' })
-      done()
-    })
+    // compiler.hooks.watchRun.tapAsync('main-log', (_compiler, done) => {
+    //   logStats('Main', chalk.white.bold('compiling...'))
+    //   hotMiddleware.publish({ action: 'compiling' })
+    //   done()
+    // })
 
     compiler.watch({}, (err, stats) => {
       if (err) {
