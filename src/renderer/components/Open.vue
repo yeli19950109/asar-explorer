@@ -3,8 +3,6 @@
         id="open"
         ref="openRef"
         @click="selectAsarFile"
-        @drop.prevent="onDrop"
-        @dragover.prevent
     >
         <div class="title">Drop an <code>.asar</code> here</div>
         <div class="hint">or click anywhere to choose a file</div>
@@ -13,19 +11,13 @@
 
 <script setup lang="ts">
 import { useAsarStore } from '@/stores/asar';
-import * as fs from '@/fs';
+import * as fs from '@/stores/fs.ts';
 
 const asar = useAsarStore();
 
 async function selectAsarFile() {
     const p = await fs.selectAsarFile();
     if (p) await asar.openFromPath(p);
-}
-
-function onDrop(e: DragEvent) {
-    const file = e.dataTransfer?.files?.item(0);
-    if (!file?.path) return;
-    asar.openFromPath(file.path);
 }
 </script>
 

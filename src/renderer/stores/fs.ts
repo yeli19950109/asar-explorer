@@ -3,7 +3,7 @@
  * bridged via preload `contextBridge.exposeInMainWorld('asarExplorer', …)`.
  */
 
-import type { AsarContentItem, AsarExplorerApi } from './types'
+import type { AsarContentItem, AsarExplorerApi } from '../types.ts'
 
 function getApi (): AsarExplorerApi {
   const api = typeof window !== 'undefined' ? window.asarExplorer : undefined

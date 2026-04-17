@@ -1,78 +1,83 @@
 <template>
-  <div class="item" ref="itemRef" draggable @dblclick="navigate">
-    <div v-if="!isFile" class="file-icon">
-      <svg width="18" height="18" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg"><path d="M1728 608v704q0 92-66 158t-158 66h-1216q-92 0-158-66t-66-158v-960q0-92 66-158t158-66h320q92 0 158 66t66 158v32h672q92 0 158 66t66 158z" fill="#fff"/></svg>
+    <div class="item" ref="itemRef" draggable @dblclick="navigate">
+        <div v-if="!isFile" class="file-icon">
+            <svg width="18" height="18" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+                <path d="M1728 608v704q0 92-66 158t-158 66h-1216q-92 0-158-66t-66-158v-960q0-92 66-158t158-66h320q92 0 158 66t66 158v32h672q92 0 158 66t66 158z"
+                      fill="#fff"/>
+            </svg>
+        </div>
+        <div class="file-name">
+            {{ item.name }}
+        </div>
     </div>
-    <div class="file-name">
-      {{ item.name }}
-    </div>
-  </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
-import { useAsarStore } from '@/stores/asar'
-import type { AsarContentItem } from '@/types'
-import * as fs from '@/fs'
+import { computed, onMounted, ref } from 'vue';
+import { useAsarStore } from '@/stores/asar';
+import type { AsarContentItem } from '@/types';
+import * as fs from '@/stores/fs.ts';
 
 const props = defineProps<{
-  item: AsarContentItem
-}>()
+    item: AsarContentItem
+}>();
 
-const itemRef = ref<HTMLElement | null>(null)
-const asar = useAsarStore()
+const itemRef = ref<HTMLElement | null>(null);
+const asar = useAsarStore();
 
-const isFile = computed(() => props.item.stat.isFile === true)
+const isFile = computed(() => props.item.stat.isFile === true);
 
-function navigate () {
-  if (!isFile.value) {
-    asar.setCurrentPath(props.item.path)
-    asar.fetchContents(props.item.path)
-  }
+function navigate() {
+    if (!isFile.value) {
+        asar.setCurrentPath(props.item.path);
+        asar.fetchContents(props.item.path);
+    }
 }
 
 onMounted(() => {
-  if (!itemRef.value) return
-  itemRef.value.ondragstart = async (e) => {
-    e.preventDefault()
-    const tmpPath = await fs.extractFile(props.item.path, props.item.name)
-    fs.startDrag(tmpPath)
-    asar.addGarbage(tmpPath)
-  }
-})
+    if (!itemRef.value) return;
+    itemRef.value.ondragstart = async (e) => {
+        e.preventDefault();
+        const tmpPath = await fs.extractFile(props.item.path, props.item.name);
+        fs.startDrag(tmpPath);
+        asar.addGarbage(tmpPath);
+    };
+});
 </script>
 
 <style>
 .item {
-  align-items: center;
-  cursor: pointer;
-  background: rgba(255, 255, 255, 0);
-  border-top: 2px solid rgba(255, 255, 255, .3);
-  display: flex;
-  font-size: 18px;
-  justify-content: flex-start;
-  padding: 20px;
-  transition: background 200ms ease-in-out;
+    align-items: center;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0);
+    border-top: 2px solid rgba(255, 255, 255, .3);
+    display: flex;
+    font-size: 18px;
+    justify-content: flex-start;
+    padding: 20px;
+    transition: background 200ms ease-in-out;
 }
 
-.item:nth-child(1) { border: 0; }
+.item:nth-child(1) {
+    border: 0;
+}
 
 .item:hover {
-  background: rgba(255, 255, 255, .15);
+    background: rgba(255, 255, 255, .15);
 }
 
 .file-name {
-  flex: 1;
-  overflow: hidden;
-  pointer-events: none;
-  text-overflow: ellipsis;
-  user-select: none;
-  white-space: nowrap;
+    flex: 1;
+    overflow: hidden;
+    pointer-events: none;
+    text-overflow: ellipsis;
+    user-select: none;
+    white-space: nowrap;
 }
 
 .file-icon {
-  margin-right: 8px;
-  margin-bottom: -3px;
-  pointer-events: none;
+    margin-right: 8px;
+    margin-bottom: -3px;
+    pointer-events: none;
 }
 </style>

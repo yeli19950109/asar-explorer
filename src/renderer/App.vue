@@ -12,7 +12,7 @@ import { storeToRefs } from 'pinia';
 import { useAsarStore } from '@/stores/asar';
 import Open from '@/components/Open.vue';
 import Explorer from '@/components/Explorer.vue';
-import * as fs from '@/fs';
+import * as fs from '@/stores/fs.ts';
 
 const asar = useAsarStore();
 const { originalPath } = storeToRefs(asar);

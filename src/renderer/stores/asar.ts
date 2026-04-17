@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import type { AsarContentItem } from '@/types'
-import * as fs from '@/fs'
+import * as fs from '@/stores/fs.ts'
 
 interface AsarState {
   asarName: string

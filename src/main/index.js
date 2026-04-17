@@ -3,8 +3,9 @@ import { app, BrowserWindow, Menu } from 'electron';
 import isDev from 'electron-is-dev';
 import contextMenu from 'electron-context-menu';
 
-import { attachMainWindow, broadcastInitialAsarIfAny } from './events';
+import { attachMainWindow, broadcastInitialAsarIfAny, queueAsarOpen } from './events';
 import process from 'node:process';
+import fs from 'fs-extra';
 
 let mainWindow;
 
@@ -51,6 +52,21 @@ function createWindow() {
 
     mainWindow.on('closed', () => {
         mainWindow = null;
+        attachMainWindow(mainWindow);
+    });
+    mainWindow.webContents.on('will-navigate', e => {
+        console.log(e.url);
+        if (e.url.startsWith('http://localhost')) {
+            // 本地开发允许放行
+        } else {
+            e.preventDefault();
+        }
+    });
+    mainWindow.webContents.setWindowOpenHandler((e) => {
+        const path = e.url;
+        console.log(path);
+        queueAsarOpen(path);
+        return { action: 'deny' };
     });
 }
 
