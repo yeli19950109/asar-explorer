@@ -5,7 +5,6 @@ import contextMenu from 'electron-context-menu';
 
 import { attachMainWindow, broadcastInitialAsarIfAny, queueAsarOpen } from './events';
 import process from 'node:process';
-import fs from 'fs-extra';
 
 let mainWindow;
 
