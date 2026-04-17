@@ -12,3 +12,10 @@ app.mount('#app');
 console.log(
     '👋 This message is being logged by "renderer.ts", included via Vite',
 );
+['dragenter', 'dragover', 'dragleave', 'drop'].forEach(type => {
+    window.addEventListener(type, e => {
+        console.log(type);
+        e.preventDefault();
+        e.stopPropagation();
+    });
+});

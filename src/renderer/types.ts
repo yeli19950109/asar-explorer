@@ -18,4 +18,7 @@ export interface AsarExplorerApi {
   addGarbage: (p: string) => void
   clearGarbage: () => void
   startDrag: (tmpPath: string) => void
+  selectAsarFile: () => Promise<string | null>
+  notifyRendererReady: () => Promise<void>
+  onAsarOpened: (callback: (path: string) => void) => () => void
 }

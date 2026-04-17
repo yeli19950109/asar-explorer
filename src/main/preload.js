@@ -16,7 +16,14 @@ const asarExplorer = {
   addGarbage: (p) => ipcRenderer.send('asar:addGarbage', p),
   clearGarbage: () => ipcRenderer.send('asar:clearGarbage'),
   startDrag: (tmpPath) => ipcRenderer.send('ondragstart', tmpPath),
-  joinPath: (...segments) => path.join(...segments)
+  joinPath: (...segments) => path.join(...segments),
+  selectAsarFile: () => ipcRenderer.invoke('asar:selectFile'),
+  notifyRendererReady: () => ipcRenderer.invoke('asar:rendererReady'),
+  onAsarOpened: (callback) => {
+    const listener = (_event, filePath) => callback(filePath)
+    ipcRenderer.on('asar:opened', listener)
+    return () => ipcRenderer.removeListener('asar:opened', listener)
+  }
 }
 
 contextBridge.exposeInMainWorld('asarExplorer', asarExplorer)

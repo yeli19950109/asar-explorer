@@ -1,56 +1,41 @@
 <template>
-    <div id="open" ref="openRef" @drop="onDrop" @dragover.prevent.stop @click="onclick()">
-        <div class="title">Drop in an `asar` archive</div>
+    <div
+        id="open"
+        ref="openRef"
+        @click="selectAsarFile"
+        @drop.prevent="onDrop"
+        @dragover.prevent
+    >
+        <div class="title">Drop an <code>.asar</code> here</div>
+        <div class="hint">or click anywhere to choose a file</div>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
 import { useAsarStore } from '@/stores/asar';
 import * as fs from '@/fs';
 
 const asar = useAsarStore();
-const openRef = ref<HTMLDivElement>();
 
-// ['dragover', 'drop'].forEach(type => {
-//     window.addEventListener(type, (e) => {
-//         console.log(type, e);
-//     });
-// });
-
-function onclick() {
-    console.log('onclick');
+async function selectAsarFile() {
+    const p = await fs.selectAsarFile();
+    if (p) await asar.openFromPath(p);
 }
 
 function onDrop(e: DragEvent) {
-    console.debug(e);
-    e.preventDefault();
-    // e.stopPropagation();
-    // if (e.dataTransfer) {
-    //     handleDrop(e.dataTransfer.files);
-    // }
-    // return false;
-}
-
-async function handleDrop(files: FileList) {
-    if (files.length > 1) return;
-    const file = files.item(0);
-    if (!file || !/\.asar$/.test(file.path)) return;
-
-    try {
-        await Promise.resolve(fs.pathExists(file.path));
-        asar.setOriginalPath(file.path);
-    } catch (err) {
-        console.log(err);
-    }
+    const file = e.dataTransfer?.files?.item(0);
+    if (!file?.path) return;
+    asar.openFromPath(file.path);
 }
 </script>
 
 <style scoped>
 #open {
     align-items: center;
+    cursor: pointer;
     display: flex;
     flex-direction: column;
+    gap: 10px;
     justify-content: center;
     width: 100vw;
     position: absolute;
@@ -58,21 +43,32 @@ async function handleDrop(files: FileList) {
     height: calc(100% - 22px);
 }
 
-//#open:after {
-//    content: '';
-//    background: transparent;
-//    border: 6px dashed rgba(255, 255, 255, .9);
-//    border-radius: 6px;
-//    bottom: 20px;
-//    display: block;
-//    left: 20px;
-//    position: absolute;
-//    right: 20px;
-//    top: 39px;
-//    pointer-events: none;
-//}
+#open:after {
+    content: '';
+    background: transparent;
+    border: 6px dashed rgba(255, 255, 255, .9);
+    border-radius: 6px;
+    bottom: 20px;
+    display: block;
+    left: 20px;
+    position: absolute;
+    right: 20px;
+    top: 39px;
+    pointer-events: none;
+}
 
 .title {
+    font-size: 20px;
+    user-select: none;
+}
+
+.title code {
+    font-size: inherit;
+}
+
+.hint {
+    font-size: 15px;
+    opacity: .92;
     user-select: none;
 }
 </style>

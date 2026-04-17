@@ -1,18 +1,33 @@
 <template>
     <div class="asar-explorer">
         <div class="title-bar"></div>
-        <Open v-if="originalPath === ''"/>
-        <Explorer v-else/>
+        <Open v-if="originalPath === ''" />
+        <Explorer v-else />
     </div>
 </template>
 
 <script setup lang="ts">
+import { onMounted, onUnmounted } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useAsarStore } from '@/stores/asar';
 import Open from '@/components/Open.vue';
 import Explorer from '@/components/Explorer.vue';
+import * as fs from '@/fs';
 
-const { originalPath } = storeToRefs(useAsarStore());
+const asar = useAsarStore();
+const { originalPath } = storeToRefs(asar);
+
+let offAsarOpened = fs.onAsarOpened((path) => {
+    asar.openFromPath(path);
+});
+onMounted(() => {
+    fs.notifyRendererReady();
+});
+
+onUnmounted(() => {
+    offAsarOpened?.();
+    offAsarOpened = () => { }
+});
 </script>
 
 <style>
@@ -48,7 +63,8 @@ body {
     background: rgba(255, 255, 255, .65);
 }
 
-#app, .asar-explorer {
+#app,
+.asar-explorer {
     width: 100%;
     height: 100%;
 }

@@ -39,6 +39,15 @@ export const useAsarStore = defineStore('asar', {
       this.currentPath = path
       this.asarName = path.split(/\\|\//g).reverse()[0] ?? ''
     },
+    async openFromPath (path: string) {
+      if (!/\.asar$/i.test(path)) return
+      try {
+        if (!(await fs.pathExists(path))) return
+        this.setOriginalPath(path)
+      } catch {
+        // ignore invalid paths
+      }
+    },
     setCurrentPath (path: string) {
       this.currentPath = path
     },

@@ -1,6 +1,61 @@
-import { ipcMain, app } from 'electron'
-import { join } from 'node:path'
+import { ipcMain, app, dialog, BrowserWindow } from 'electron'
+import path, { join } from 'node:path'
 import fs from 'fs-extra'
+
+let mainWindowRef = null
+let pendingAsarPath = null
+let rendererAnnouncedReady = false
+
+export function attachMainWindow (win) {
+  mainWindowRef = win
+}
+
+function sendAsarOpened (filePath) {
+  if (!mainWindowRef || mainWindowRef.isDestroyed()) return
+  mainWindowRef.webContents.send('asar:opened', filePath)
+}
+
+function queueAsarOpen (filePath) {
+  if (!filePath || !/\.asar$/i.test(filePath)) return
+  pendingAsarPath = path.resolve(filePath)
+  if (rendererAnnouncedReady) {
+    sendAsarOpened(pendingAsarPath)
+    pendingAsarPath = null
+  }
+}
+
+export function broadcastInitialAsarIfAny () {
+  const arg = process.argv.slice(1).find((a) => /\.asar$/i.test(a))
+  if (!arg) return
+  const resolved = path.resolve(arg)
+  if (fs.existsSync(resolved)) {
+    queueAsarOpen(resolved)
+  }
+}
+
+app.on('open-file', (event, filePath) => {
+  event.preventDefault()
+  queueAsarOpen(filePath)
+})
+
+ipcMain.handle('asar:rendererReady', () => {
+  rendererAnnouncedReady = true
+  if (pendingAsarPath && mainWindowRef && !mainWindowRef.isDestroyed()) {
+    sendAsarOpened(pendingAsarPath)
+    pendingAsarPath = null
+  }
+})
+
+ipcMain.handle('asar:selectFile', async (event) => {
+  const win = BrowserWindow.fromWebContents(event.sender)
+  const { canceled, filePaths } = await dialog.showOpenDialog(win ?? undefined, {
+    title: 'Open ASAR archive',
+    properties: ['openFile'],
+    filters: [{ name: 'ASAR', extensions: ['asar'] }]
+  })
+  if (canceled || !filePaths[0]) return null
+  return filePaths[0]
+})
 
 function dragIconPath () {
   if (app.isPackaged) {

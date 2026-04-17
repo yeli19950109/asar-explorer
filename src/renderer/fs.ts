@@ -44,3 +44,15 @@ export function clearGarbage (): void {
 export function startDrag (tmpPath: string): void {
   getApi().startDrag(tmpPath)
 }
+
+export function selectAsarFile (): Promise<string | null> {
+  return getApi().selectAsarFile()
+}
+
+export function notifyRendererReady (): Promise<void> {
+  return getApi().notifyRendererReady()
+}
+
+export function onAsarOpened (callback: (path: string) => void): () => void {
+  return getApi().onAsarOpened(callback)
+}

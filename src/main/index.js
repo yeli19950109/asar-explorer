@@ -3,7 +3,7 @@ import { app, BrowserWindow, Menu } from 'electron';
 import isDev from 'electron-is-dev';
 import contextMenu from 'electron-context-menu';
 
-import './events';
+import { attachMainWindow, broadcastInitialAsarIfAny } from './events';
 import process from 'node:process';
 
 let mainWindow;
@@ -45,6 +45,9 @@ function createWindow() {
     if (isDev) {
         mainWindow.webContents.openDevTools({ mode: 'detach' });
     }
+
+    attachMainWindow(mainWindow);
+    broadcastInitialAsarIfAny();
 
     mainWindow.on('closed', () => {
         mainWindow = null;
