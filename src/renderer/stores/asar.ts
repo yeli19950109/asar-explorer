@@ -1,8 +1,17 @@
 import { defineStore } from 'pinia'
+import type { AsarContentItem } from '@/types'
 import * as fs from '@/fs'
 
+interface AsarState {
+  asarName: string
+  contents: AsarContentItem[]
+  currentPath: string
+  originalPath: string
+  garbage: string[]
+}
+
 export const useAsarStore = defineStore('asar', {
-  state: () => ({
+  state: (): AsarState => ({
     asarName: '',
     contents: [],
     currentPath: '',
@@ -10,7 +19,7 @@ export const useAsarStore = defineStore('asar', {
     garbage: []
   }),
   actions: {
-    addGarbage (path) {
+    addGarbage (path: string) {
       this.garbage.push(path)
       fs.addGarbage(path)
     },
@@ -22,18 +31,18 @@ export const useAsarStore = defineStore('asar', {
       this.garbage = []
       fs.clearGarbage()
     },
-    setContents (contents) {
+    setContents (contents: AsarContentItem[]) {
       this.contents = contents
     },
-    setOriginalPath (path) {
+    setOriginalPath (path: string) {
       this.originalPath = path
       this.currentPath = path
-      this.asarName = path.split(/\\|\//g).reverse()[0]
+      this.asarName = path.split(/\\|\//g).reverse()[0] ?? ''
     },
-    setCurrentPath (path) {
+    setCurrentPath (path: string) {
       this.currentPath = path
     },
-    async fetchContents (filePath) {
+    async fetchContents (filePath: string) {
       const contents = await fs.getContents(filePath)
       this.setContents(contents)
     }

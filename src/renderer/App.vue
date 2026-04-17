@@ -6,7 +6,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { storeToRefs } from 'pinia'
 import { useAsarStore } from '@/stores/asar'
 import Open from '@/components/Open.vue'

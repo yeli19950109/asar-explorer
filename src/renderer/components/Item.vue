@@ -9,19 +9,17 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { useAsarStore } from '@/stores/asar'
+import type { AsarContentItem } from '@/types'
 import * as fs from '@/fs'
 
-const props = defineProps({
-  item: {
-    type: Object,
-    required: true
-  }
-})
+const props = defineProps<{
+  item: AsarContentItem
+}>()
 
-const itemRef = ref(null)
+const itemRef = ref<HTMLElement | null>(null)
 const asar = useAsarStore()
 
 const isFile = computed(() => props.item.stat.isFile === true)

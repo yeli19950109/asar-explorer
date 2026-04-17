@@ -4,7 +4,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { onMounted } from 'vue'
 import { useAsarStore } from '@/stores/asar'
 import * as fs from '@/fs'
@@ -15,7 +15,9 @@ onMounted(() => {
   document.addEventListener('drop', (e) => {
     e.preventDefault()
     e.stopPropagation()
-    handleDrop(e.dataTransfer.files)
+    if (e.dataTransfer) {
+      handleDrop(e.dataTransfer.files)
+    }
     return false
   })
 
@@ -25,15 +27,16 @@ onMounted(() => {
   })
 })
 
-async function handleDrop (files) {
+async function handleDrop (files: FileList) {
   if (files.length > 1) return
-  if (!/\.asar$/.test(files[0].path)) return
+  const file = files.item(0)
+  if (!file || !/\.asar$/.test(file.path)) return
 
   try {
-    await Promise.resolve(fs.pathExists(files[0].path))
-    asar.setOriginalPath(files[0].path)
-  } catch (e) {
-    console.log(e)
+    await Promise.resolve(fs.pathExists(file.path))
+    asar.setOriginalPath(file.path)
+  } catch (err) {
+    console.log(err)
   }
 }
 </script>
