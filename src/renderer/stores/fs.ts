@@ -1,5 +1,5 @@
 /**
- * File system access: main process handlers in src/main/events.js,
+ * File system access: main process handlers in src/main/events.ts,
  * bridged via preload `contextBridge.exposeInMainWorld('asarExplorer', …)`.
  */
 

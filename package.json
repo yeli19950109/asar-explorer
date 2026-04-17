@@ -4,7 +4,7 @@
   "description": "An Electron + Vue ASAR explorer",
   "main": ".vite/build/index.js",
   "scripts": {
-    "typecheck": "vue-tsc --noEmit",
+    "typecheck": "vue-tsc --noEmit && tsc -p tsconfig.main.json --noEmit",
     "start": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",

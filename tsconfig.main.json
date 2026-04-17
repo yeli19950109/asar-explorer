@@ -1,0 +1,7 @@
+{
+  "extends": "./tsconfig.node.json",
+  "compilerOptions": {
+    "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.main.tsbuildinfo"
+  },
+  "include": ["src/main/**/*.ts", "src/main/**/*.d.ts"]
+}

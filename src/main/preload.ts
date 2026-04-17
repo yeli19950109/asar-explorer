@@ -1,17 +1,16 @@
-'use strict';
-
 import path from 'node:path';
 import { contextBridge, ipcRenderer } from 'electron';
+
+import type { AsarExplorerApi } from '../renderer/types.ts';
 
 /**
  * Renderer-visible API (only what we whitelist here reaches the page).
  * Must use contextBridge with contextIsolation: true — never assign to window in preload.
  */
-const asarExplorer = {
+const asarExplorer: AsarExplorerApi = {
     pathExists: (p) => ipcRenderer.invoke('fs:pathExists', p),
     getContents: (dirPath) => ipcRenderer.invoke('fs:getContents', dirPath),
-    extractFile: (filePath, name) =>
-        ipcRenderer.invoke('fs:extractFile', { filePath, name }),
+    extractFile: (filePath, name) => ipcRenderer.invoke('fs:extractFile', { filePath, name }),
     removeItem: (p) => ipcRenderer.invoke('fs:removeItem', p),
     addGarbage: (p) => ipcRenderer.send('asar:addGarbage', p),
     clearGarbage: () => ipcRenderer.send('asar:clearGarbage'),
@@ -23,7 +22,7 @@ const asarExplorer = {
     selectAsarFile: () => ipcRenderer.invoke('asar:selectFile'),
     notifyRendererReady: () => ipcRenderer.invoke('asar:rendererReady'),
     onAsarOpened: (callback) => {
-        const listener = (_event, filePath) => callback(filePath);
+        const listener = (_event: Electron.IpcRendererEvent, filePath: string) => callback(filePath);
         ipcRenderer.on('asar:opened', listener);
         return () => ipcRenderer.removeListener('asar:opened', listener);
     },
