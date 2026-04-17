@@ -15,7 +15,9 @@ const asarExplorer = {
     removeItem: (p) => ipcRenderer.invoke('fs:removeItem', p),
     addGarbage: (p) => ipcRenderer.send('asar:addGarbage', p),
     clearGarbage: () => ipcRenderer.send('asar:clearGarbage'),
-    startDrag: (tmpPath) => ipcRenderer.send('asar:ondragstart', tmpPath),
+    dragFileOut: (filePath, name) => {
+        ipcRenderer.sendSync('asar:dragFileOut', { filePath, name });
+    },
     joinPath: (...segments) => path.join(...segments),
     dirname: (p) => path.dirname(p),
     selectAsarFile: () => ipcRenderer.invoke('asar:selectFile'),

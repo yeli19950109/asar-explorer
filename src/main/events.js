@@ -1,3 +1,5 @@
+'use strict';
+
 import { ipcMain, app, dialog, BrowserWindow } from 'electron';
 import path, { join } from 'node:path';
 import fs from 'node:fs';
@@ -118,11 +120,20 @@ ipcMain.on('asar:clearGarbage', () => {
     garbagePaths.clear();
 });
 
-ipcMain.on('asar:ondragstart', (e, dragPath) => {
-    e.sender.startDrag({
-        file: dragPath,
-        icon: dragIconPath(),
-    });
+/** Must run synchronously during renderer `dragstart` (use sendSync), or Finder/Desktop drop fails. */
+ipcMain.on('asar:dragFileOut', (event, { filePath, name }) => {
+    try {
+        const tmpBase = app.getPath('temp');
+        const tmpPath = join(tmpBase, name);
+        fs.copyFileSync(filePath, tmpPath);
+        garbagePaths.add(tmpPath);
+        event.sender.startDrag({
+            file: tmpPath,
+            icon: dragIconPath(),
+        });
+    } catch (err) {
+        console.error('asar:dragFileOut', err);
+    }
 });
 
 app.on('before-quit', () => {

@@ -45,8 +45,8 @@ export function clearGarbage (): void {
   getApi().clearGarbage()
 }
 
-export function startDrag (tmpPath: string): void {
-  getApi().startDrag(tmpPath)
+export function dragFileOut (filePath: string, name: string): void {
+  getApi().dragFileOut(filePath, name)
 }
 
 export function selectAsarFile (): Promise<string | null> {

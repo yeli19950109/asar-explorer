@@ -1,3 +1,5 @@
+'use strict';
+
 import path from 'node:path';
 import { app, BrowserWindow, Menu } from 'electron';
 import isDev from 'electron-is-dev';

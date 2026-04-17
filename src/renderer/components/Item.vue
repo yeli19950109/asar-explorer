@@ -1,5 +1,5 @@
 <template>
-    <div class="item" ref="itemRef" draggable @dblclick="navigate">
+    <div class="item" ref="itemRef" :draggable="isFile" @dblclick="navigate">
         <div v-if="!isFile" class="file-icon">
             <svg width="18" height="18" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
                 <path d="M1728 608v704q0 92-66 158t-158 66h-1216q-92 0-158-66t-66-158v-960q0-92 66-158t158-66h320q92 0 158 66t66 158v32h672q92 0 158 66t66 158z"
@@ -36,11 +36,10 @@ function navigate() {
 
 onMounted(() => {
     if (!itemRef.value) return;
-    itemRef.value.ondragstart = async (e) => {
+    itemRef.value.ondragstart = (e) => {
+        if (!isFile.value) return;
         e.preventDefault();
-        const tmpPath = await fs.extractFile(props.item.path, props.item.name);
-        fs.startDrag(tmpPath);
-        asar.addGarbage(tmpPath);
+        fs.dragFileOut(props.item.path, props.item.name);
     };
 });
 </script>
