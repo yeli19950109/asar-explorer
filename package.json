@@ -2,7 +2,7 @@
   "name": "asar-explorer",
   "version": "0.1.0",
   "description": "An Electron + Vue ASAR explorer",
-  "main": ".vite/build/index.js",
+  "main": ".vite/build/main.js",
   "scripts": {
     "typecheck": "vue-tsc --noEmit && tsc -p tsconfig.main.json --noEmit",
     "start": "electron-forge start",
@@ -11,7 +11,7 @@
     "publish": "electron-forge publish",
     "dev": "vite -c vite.renderer.config.ts"
   },
-  "author": "Greg Holguin <simulatedgreg@gmail.com>",
+  "author": "YEL",
   "license": "MIT",
   "dependencies": {
     "axios": "^1.15.0",
