@@ -1,3 +1,1 @@
-/** Injected by `@electron-forge/plugin-vite` at build time. */
-declare const MAIN_WINDOW_VITE_DEV_SERVER_URL: string;
-declare const MAIN_WINDOW_VITE_NAME: string;
+/// <reference types="@electron-forge/plugin-vite/forge-vite-env" />
