@@ -15,6 +15,7 @@ export interface AsarExplorerApi {
     extractFile: (filePath: string, name: string) => Promise<string>;
     removeItem: (p: string) => Promise<void>;
     joinPath: (...segments: string[]) => string;
+    dirname: (p: string) => string;
     addGarbage: (p: string) => void;
     clearGarbage: () => void;
     startDrag: (tmpPath: string) => void;

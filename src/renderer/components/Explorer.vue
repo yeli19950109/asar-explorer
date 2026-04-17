@@ -45,10 +45,7 @@ const sortedContents = computed(() => [
 ]);
 
 function navigateUp() {
-    console.log('navigateUp', filePath.value);
-    const segments = filePath.value.split(/\\|\//g);
-    segments.pop();
-    const pwd = fs.joinPath(...segments);
+    const pwd = fs.dirname(filePath.value);
     asar.setCurrentPath(pwd);
     asar.fetchContents(pwd);
 }

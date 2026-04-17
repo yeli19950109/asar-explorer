@@ -17,6 +17,7 @@ const asarExplorer = {
     clearGarbage: () => ipcRenderer.send('asar:clearGarbage'),
     startDrag: (tmpPath) => ipcRenderer.send('asar:ondragstart', tmpPath),
     joinPath: (...segments) => path.join(...segments),
+    dirname: (p) => path.dirname(p),
     selectAsarFile: () => ipcRenderer.invoke('asar:selectFile'),
     notifyRendererReady: () => ipcRenderer.invoke('asar:rendererReady'),
     onAsarOpened: (callback) => {

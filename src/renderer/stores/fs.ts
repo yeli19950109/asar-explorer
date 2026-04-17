@@ -33,6 +33,10 @@ export function joinPath (...segments: string[]): string {
   return getApi().joinPath(...segments)
 }
 
+export function dirname (p: string): string {
+  return getApi().dirname(p)
+}
+
 export function addGarbage (p: string): void {
   getApi().addGarbage(p)
 }
