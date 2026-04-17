@@ -1,6 +1,7 @@
 import { ipcMain, app, dialog, BrowserWindow } from 'electron';
 import path, { join } from 'node:path';
-import fs from 'fs-extra';
+import fs from 'node:fs';
+import fsp from 'node:fs/promises';
 import { fileURLToPath } from 'url';
 
 let mainWindowRef = null;
@@ -82,11 +83,11 @@ ipcMain.handle('fs:getContents', async (_e, dirPath) => {
         console.log(`${dirPath} not exist`)
         throw new Error('Path does not exist');
     }
-    const files = await fs.readdir(dirPath);
+    const files = await fsp.readdir(dirPath);
     const contents = [];
     for (const file of files) {
         const full = join(dirPath, file);
-        const st = await fs.stat(full);
+        const st = await fsp.stat(full);
         contents.push({
             name: file,
             path: full,
@@ -99,12 +100,12 @@ ipcMain.handle('fs:getContents', async (_e, dirPath) => {
 ipcMain.handle('fs:extractFile', async (_e, { filePath, name }) => {
     const tmpBase = app.getPath('temp');
     const tmpPath = join(tmpBase, name);
-    await fs.copy(filePath, tmpPath);
+    await fsp.copyFile(filePath, tmpPath);
     return tmpPath;
 });
 
 ipcMain.handle('fs:removeItem', (_e, p) => {
-    fs.removeSync(p);
+    fs.rmSync(p, { recursive: true, force: true });
 });
 
 const garbagePaths = new Set();
@@ -127,7 +128,7 @@ ipcMain.on('asar:ondragstart', (e, dragPath) => {
 app.on('before-quit', () => {
     for (const p of garbagePaths) {
         try {
-            fs.removeSync(p);
+            fs.rmSync(p, { recursive: true, force: true });
         } catch (err) {
             // ignore cleanup errors
         }
